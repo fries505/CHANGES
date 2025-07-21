@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Platform - Enhanced Interface</title>
+    <link rel="icon" href="favicon.ico">
+    <link rel="stylesheet" href="ican.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+</head>
+<body>
+    <div class="container">
+        <!-- Header with theme toggle and bandwidth mode -->
+        <header>
+            <div class="header-left">
+                <h1>Exam Platform</h1>
+            </div>
+            <div class="header-right">
+                <button id="themeToggle" class="icon-btn" title="Toggle Dark Mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+                <button id="bandwidthToggle" class="icon-btn" title="Toggle Low Bandwidth Mode">
+                    <i class="fas fa-network-wired"></i>
+                </button>
+                <button id="helpBtn" class="icon-btn" title="Keyboard Shortcuts">
+                    <i class="fas fa-question-circle"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main content area that changes based on flow -->
+        <main id="mainContent">
+            <!-- Login screen (initial state) -->
+            <section id="loginScreen" class="screen active">
+                <div class="login-container">
+                    <h2>Login to Your Exam</h2>
+
+                    <form id="loginForm">
+                        
+                        <div class="form-group">
+                            <input type="text" id="memberId" required placeholder="Member ID">
+                        </div>
+
+                        <div class="form-group">
+                            <input type="password" id="password" required placeholder="Password">
+                        </div>
+
+                        <button type="submit" class="btn-primary">Login</button>
+                        
+
+                        <a href="register.html" class="btn-primary" style="display:inline-block;text-align:center;">
+                            <i class="fas fa-user-plus"></i> Register
+                        </a>
+                    </form>
+                </div>
+            </section>
+
+            <!-- ID Verification screen -->
+            <section id="verificationScreen" class="screen">
+                <div class="verification-container">
+                    <h2>Identity Verification</h2>
+                    <div class="verification-steps">
+                        <div class="step">
+                            <h3>Step 1: Photo Verification</h3>
+                            <div class="webcam-container">
+                                <video id="webcam" autoplay playsinline></video>
+                                <canvas id="canvas" class="d-none"></canvas>
+                            </div>
+                            <!-- Removed Capture Photo button -->
+                        </div>
+                    </div>
+                    <!-- Hide verifyBtn -->
+                    <button id="verifyBtn" class="btn-primary" style="display:none;">Complete Verification</button>
+                </div>
+            </section>
+
+            <!-- Exam Instructions screen -->
+            <section id="instructionsScreen" class="screen">
+                <div class="instructions-container">
+                    <h2>Exam Instructions</h2>
+                    <div class="instructions-content">
+                        <h3>Important Information</h3>
+                        <ul>
+                            <li>This exam consists of 100 multiple-choice questions.</li>
+                            <li>You have 180 minutes to complete the exam.</li>
+                            <li>There is no penalty for guessing.</li>
+                            <li>You cannot return to previous questions once answered.</li>
+                        </ul>
+                        
+                        <h3>Allowed Materials</h3>
+                        <ul>
+                            <li>One sheet of blank paper for notes</li>
+                            <li>Basic calculator (no graphing calculators)</li>
+                        </ul>
+                        
+                        <h3>Technical Requirements</h3>
+                        <ul>
+                            <li>Stable internet connection</li>
+                            <li>Web browser must remain in full-screen mode</li>
+                            <li>No other applications may be open during the exam</li>
+                        </ul>
+                    </div>
+                    <div class="timer-display">
+                        <span id="examTimer">Time Remaining: 180:00</span>
+                    </div>
+                    <button id="startExamBtn" class="btn-primary">Start Exam</button>
+                </div>
+            </section>
+
+            <!-- Exam Interface screen -->
+            <section id="examScreen" class="screen">
+                <div class="exam-container">
+                    <div class="exam-header">
+                        <div class="exam-info">
+                            <span id="currentQuestion">Question 1 of 100</span>
+                            <span id="examTimer">Time Remaining: 179:45</span>
+                        </div>
+                        <div class="exam-controls">
+                            <button id="flagBtn" class="btn-secondary" title="Flag for review (F)">
+                                <i class="far fa-flag"></i> Flag
+                            </button>
+                            <button id="fullscreenBtn" class="btn-secondary" title="Toggle Fullscreen (F11)">
+                                <i class="fas fa-expand"></i> Fullscreen
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="question-container">
+                        <div class="question-text">
+                            <p id="questionText">What is the primary objective of financial reporting according to the FASB Conceptual Framework?</p>
+                        </div>
+                        
+                        <div class="answer-options">
+                            <div class="option">
+                                <input type="radio" name="answer" id="option1" value="A">
+                                <label for="option1">To provide information useful for making investment and credit decisions</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="answer" id="option2" value="B">
+                                <label for="option2">To ensure the company appears profitable to investors</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="answer" id="option3" value="C">
+                                <label for="option3">To comply with government regulations</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" name="answer" id="option4" value="D">
+                                <label for="option4">To minimize the company's tax liability</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="navigation-buttons">
+                        <button id="prevBtn" class="btn-secondary" disabled>Previous (←)</button>
+                        <button id="nextBtn" class="btn-primary">Next (→)</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Submission Confirmation screen -->
+            <section id="submissionScreen" class="screen">
+                <div class="submission-container">
+                    <h2>Exam Submission</h2>
+                    <div class="submission-content">
+                        <div class="summary">
+                            <p>You have answered 87 out of 100 questions.</p>
+                            <p>13 questions were flagged for review.</p>
+                            <p>Time remaining: 12 minutes.</p>
+                        </div>
+                        <div class="confirmation">
+                            <p>Are you sure you want to submit your exam?</p>
+                            <p>You will not be able to make changes after submission.</p>
+                        </div>
+                    </div>
+                    <div class="submission-buttons">
+                        <button id="returnToExamBtn" class="btn-secondary">Return to Exam</button>
+                        <button id="confirmSubmitBtn" class="btn-primary">Submit Exam</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Post-Exam Results screen -->
+            <section id="resultsScreen" class="screen">
+                <div class="results-container">
+                    <h2>Exam Results</h2>
+                    <div class="score-display">
+                        <div class="score-circle">
+                            <span class="score">78%</span>
+                            <span class="score-label">Overall Score</span>
+                        </div>
+                    </div>
+                    
+                    <div class="performance-breakdown">
+                        <h3>Performance Breakdown</h3>
+                        <div class="breakdown-grid">
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Financial Accounting</span>
+                                <div class="breakdown-bar">
+                                    <div class="breakdown-fill" style="width: 82%"></div>
+                                </div>
+                                <span class="breakdown-percent">82%</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Auditing</span>
+                                <div class="breakdown-bar">
+                                    <div class="breakdown-fill" style="width: 75%"></div>
+                                </div>
+                                <span class="breakdown-percent">75%</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Regulation</span>
+                                <div class="breakdown-bar">
+                                    <div class="breakdown-fill" style="width: 68%"></div>
+                                </div>
+                                <span class="breakdown-percent">68%</span>
+                            </div>
+                            <div class="breakdown-item">
+                                <span class="breakdown-label">Business Concepts</span>
+                                <div class="breakdown-bar">
+                                    <div class="breakdown-fill" style="width: 87%"></div>
+                                </div>
+                                <span class="breakdown-percent">87%</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="detailed-feedback">
+                        <h3>Detailed Feedback</h3>
+                        <div class="feedback-item">
+                            <h4>Strengths</h4>
+                            <ul>
+                                <li>Excellent understanding of financial statement preparation</li>
+                                <li>Strong knowledge of revenue recognition principles</li>
+                                <li>Good grasp of business law concepts</li>
+                            </ul>
+                        </div>
+                        <div class="feedback-item">
+                            <h4>Areas for Improvement</h4>
+                            <ul>
+                                <li>Need more practice with partnership taxation</li>
+                                <li>Review audit sampling techniques</li>
+                                <li>Study corporate governance principles</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="results-actions">
+                        <button id="reviewExamBtn" class="btn-secondary">Review Exam</button>
+                        <button id="exitExamBtn" class="btn-primary">Exit</button>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Help Modal (Keyboard Shortcuts) -->
+        <div id="helpModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2>Keyboard Shortcuts</h2>
+                <div class="shortcuts-grid">
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">←</span>
+                        <span class="shortcut-desc">Previous question</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">→</span>
+                        <span class="shortcut-desc">Next question</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">1-4</span>
+                        <span class="shortcut-desc">Select answer option</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">F</span>
+                        <span class="shortcut-desc">Flag question</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">F11</span>
+                        <span class="shortcut-desc">Toggle fullscreen</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Ctrl + S</span>
+                        <span class="shortcut-desc">Save progress</span>
+                    </div>
+                    <div class="shortcut-item">
+                        <span class="shortcut-key">Esc</span>
+                        <span class="shortcut-desc">Close modals</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="ican.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const memberId = document.getElementById('memberId').value;
+            const password = document.getElementById('password').value;
+            try {
+                const response = await fetch('http://localhost:5000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ memberId, password })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    localStorage.setItem('authToken', data.token);
+                    // Redirect to verification screen
+                    document.getElementById('loginScreen').classList.remove('active');
+                    document.getElementById('verificationScreen').classList.add('active');
+                    startVerificationWebcamAndAutoCapture();
+                } else {
+                    alert(data.message || 'Login failed');
+                }
+            } catch (err) {
+                alert('Login error');
+            }
+        });
+
+        // --- Real-time Verification logic ---
+        function startVerificationWebcamAndAutoCapture() {
+            const webcam = document.getElementById('webcam');
+            const canvas = document.getElementById('canvas');
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    webcam.srcObject = stream;
+                    // Wait for video to be ready, then auto-capture after 1 second
+                    webcam.onloadedmetadata = () => {
+                        setTimeout(async () => {
+                            canvas.width = webcam.videoWidth;
+                            canvas.height = webcam.videoHeight;
+                            canvas.getContext('2d').drawImage(webcam, 0, 0, canvas.width, canvas.height);
+                            const verificationPhoto = canvas.toDataURL('image/jpeg');
+                            // Stop webcam
+                            if (webcam.srcObject) {
+                                webcam.srcObject.getTracks().forEach(track => track.stop());
+                            }
+                            // Send photo to backend for real-time verification
+                            try {
+                                const response = await fetch('http://localhost:5000/api/v1/auth/verify-face', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${localStorage.getItem('authToken')}`
+                                    },
+                                    body: JSON.stringify({ photo: verificationPhoto })
+                                });
+                                const data = await response.json();
+                                if (response.ok && data.verified) {
+                                    window.location.href = '/exam-instructions.html';
+                                } else {
+                                    alert(data.message || 'Face verification failed. Please try again.');
+                                    window.location.href = 'ican.html';
+                                }
+                            } catch (err) {
+                                alert('Verification error');
+                                window.location.href = 'ican.html';
+                            }
+                        }, 1000); // 1 second delay for camera to adjust
+                    };
+                })
+                .catch(() => {
+                    alert('Could not access webcam.');
+                    window.location.href = 'ican.html';
+                });
+        }
+    </script>
+</body>
+</html>

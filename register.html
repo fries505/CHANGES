@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICAN Portal - Registration</title>
+    <style>
+        /* Shared styles with login page */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        [data-theme="dark"] body {
+            background-color: #121212;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .container {
+            background: #1e1e1e;
+            color: #ffffff;
+            box-shadow: 0 0 10px rgba(255,255,255,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+
+        [data-theme="dark"] h1 {
+            color: #3498db;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] input {
+            background-color: #2d2d2d;
+            color: #ffffff;
+            border-color: #444;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #2980b9;
+        }
+
+        .login-link {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        a {
+            color: #3498db;
+            text-decoration: none;
+        }
+
+        [data-theme="dark"] a {
+            color: #5dade2;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2rem;
+            color: #2c3e50;
+        }
+
+        [data-theme="dark"] .icon-btn {
+            color: #ffffff;
+        }
+
+        /* Password strength indicator */
+        .password-strength {
+            height: 5px;
+            background: #eee;
+            margin-top: 5px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* Webcam styles */
+        #webcamContainer {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        #webcam {
+            width: 100%;
+            max-width: 320px;
+            background: #000;
+        }
+
+        #captureBtn {
+            margin-top: 10px;
+            width: auto;
+            padding: 8px 15px;
+        }
+
+        #canvas {
+            display: none;
+        }
+
+        /* Low bandwidth mode */
+        .low-bandwidth * {
+            transition: none !important;
+            animation: none !important;
+            background-image: none !important;
+        }
+
+        .low-bandwidth .container {
+            box-shadow: none;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body class="">
+    <div class="container">
+        <div class="controls">
+            <button class="icon-btn" id="themeToggle" title="Toggle Dark Mode (Alt+D)">🌓</button>
+            <button class="icon-btn" id="bandwidthToggle" title="Toggle Low Bandwidth Mode (Alt+B)">📶</button>
+            <a href="ican.html" class="icon-btn" title="Login (Alt+L)">🔑 Login</a>
+        </div>
+
+        <h1>Create Your Account</h1>
+        <form id="registerForm">
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input type="text" id="name" required placeholder="John Doe">
+            </div>
+            <div class="form-group">
+                <label for="memberId">Member ID</label>
+                <input type="text" id="memberId" required placeholder="ATS1234">
+                <small>Your unique identification number</small>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required placeholder="john@example.com">
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" required placeholder="+2348012345678">
+            </div>
+            <div class="form-group">
+                <label for="password">Password (min 8 characters)</label>
+                <input type="password" id="password" minlength="8" required placeholder="••••••••">
+                <div class="password-strength">
+                    <div class="strength-bar" id="strengthBar"></div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" required placeholder="••••••••">
+                <small id="passwordMatch"></small>
+            </div>
+
+            <div id="webcamContainer">
+                <p>Please take a profile photo for identity verification</p>
+                <video id="webcam" autoplay playsinline></video>
+                <button type="button" id="captureBtn">Capture Photo</button>
+                <canvas id="canvas" width="320" height="240"></canvas>
+            </div>
+
+            <button type="submit" id="submitBtn">Register</button>
+        </form>
+      
+    </div>
+
+    <script>
+        // DOM Elements
+        const themeToggle = document.getElementById('themeToggle');
+        const bandwidthToggle = document.getElementById('bandwidthToggle');
+        const registerForm = document.getElementById('registerForm');
+        const passwordInput = document.getElementById('password');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const passwordMatchText = document.getElementById('passwordMatch');
+        const strengthBar = document.getElementById('strengthBar');
+        const webcamContainer = document.getElementById('webcamContainer');
+        const webcam = document.getElementById('webcam');
+        const canvas = document.getElementById('canvas');
+        const captureBtn = document.getElementById('captureBtn');
+        const submitBtn = document.getElementById('submitBtn');
+
+        let capturedPhoto = null;
+
+        // Dark Mode Toggle
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = document.documentElement.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            document.documentElement.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+        });
+
+        // Low Bandwidth Mode Toggle
+        bandwidthToggle.addEventListener('click', () => {
+            document.body.classList.toggle('low-bandwidth');
+            localStorage.setItem('lowBandwidth', document.body.classList.contains('low-bandwidth'));
+        });
+
+        // Password Strength Checker
+        passwordInput.addEventListener('input', () => {
+            const strength = calculatePasswordStrength(passwordInput.value);
+            updateStrengthBar(strength);
+        });
+
+        function calculatePasswordStrength(password) {
+            let strength = 0;
+            
+            // Length check
+            if (password.length >= 8) strength += 1;
+            if (password.length >= 12) strength += 1;
+            
+            // Complexity checks
+            if (/[A-Z]/.test(password)) strength += 1;
+            if (/[0-9]/.test(password)) strength += 1;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 1;
+            
+            return Math.min(strength, 5); // Max strength = 5
+        }
+
+        function updateStrengthBar(strength) {
+            const colors = ['#ff0000', '#ff5a00', '#ffb700', '#b7ff00', '#00ff00'];
+            const width = (strength / 5) * 100;
+            
+            strengthBar.style.width = `${width}%`;
+            strengthBar.style.backgroundColor = colors[strength - 1] || '#eee';
+        }
+
+        // Password Match Checker
+        confirmPasswordInput.addEventListener('input', () => {
+            if (confirmPasswordInput.value !== passwordInput.value) {
+                passwordMatchText.textContent = "Passwords don't match!";
+                passwordMatchText.style.color = "red";
+            } else {
+                passwordMatchText.textContent = "Passwords match!";
+                passwordMatchText.style.color = "green";
+            }
+        });
+
+        // Webcam Functions
+        function startWebcam() {
+            navigator.mediaDevices.getUserMedia({ video: true })
+                .then(stream => {
+                    webcam.srcObject = stream;
+                    webcamContainer.style.display = 'block';
+                })
+                .catch(err => {
+                    console.error("Error accessing webcam:", err);
+                    alert("Could not access webcam. Please enable camera permissions.");
+                });
+        }
+
+        captureBtn.addEventListener('click', () => {
+            // Capture photo from webcam
+            canvas.width = webcam.videoWidth;
+            canvas.height = webcam.videoHeight;
+            canvas.getContext('2d').drawImage(webcam, 0, 0, canvas.width, canvas.height);
+            capturedPhoto = canvas.toDataURL('image/jpeg');
+            
+            // Stop webcam
+            webcam.srcObject.getTracks().forEach(track => track.stop());
+            webcamContainer.style.display = 'none';
+            
+            alert("Photo captured successfully!");
+        });
+
+        // Form Submission
+        registerForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            // Validate passwords match
+            if (passwordInput.value !== confirmPasswordInput.value) {
+                alert("Passwords don't match!");
+                return;
+            }
+
+            // Check if photo was captured
+            if (!capturedPhoto) {
+                const proceed = confirm("Identity photo is required. Capture now?");
+                if (proceed) {
+                    startWebcam();
+                }
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('name', document.getElementById('name').value);
+            formData.append('memberId', document.getElementById('memberId').value);
+            formData.append('email', document.getElementById('email').value);
+            formData.append('phone', document.getElementById('phone').value);
+            formData.append('password', document.getElementById('password').value);
+
+            if (capturedPhoto) {
+                // Convert data URL to Blob
+                const blob = await fetch(capturedPhoto).then(r => r.blob());
+                formData.append('profilePhoto', blob, 'profile.jpg');
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Registering...";
+
+            try {
+                const response = await fetch('http://localhost:5000/api/v1/auth/register', {
+                    method: 'POST',
+                    body: formData  // No Content-Type header needed for FormData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert('Registration successful!');
+                    window.location.href = 'ican.html';
+                } else {
+                    throw new Error(data.message || 'Registration failed');
+                }
+            } catch (error) {
+                // Improved error message for network/CORS/backend issues
+                if (error instanceof TypeError && error.message === 'Failed to fetch') {
+                    alert('Could not connect to the server. Please ensure the backend is running and CORS is enabled.');
+                } else {
+                    alert('Error: ' + error.message);
+                }
+                console.error('Registration error:', error);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Register";
+            }
+        });
+
+        // Keyboard Shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.altKey) {
+                switch(e.key.toLowerCase()) {
+                    case 'd': // Alt+D for dark mode
+                        themeToggle.click();
+                        break;
+                    case 'b': // Alt+B for low bandwidth
+                        bandwidthToggle.click();
+                        break;
+                    case 'l': // Alt+L for login
+                        window.location.href = 'ican.html';
+                        break;
+                }
+            }
+        });
+
+        // Load saved preferences
+        if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+        }
+        if (localStorage.getItem('lowBandwidth') === 'true') {
+            document.body.classList.add('low-bandwidth');
+        }
+
+        // Initialize webcam on page load (hidden until needed)
+        startWebcam();
+        webcamContainer.style.display = 'none';
+    </script>
+</body>
+</html>
+
+<!--
+  // Troubleshooting tips:
+  // 1. Make sure your backend server is running at http://localhost:5000.
+  // 2. Ensure CORS is enabled on your backend (Access-Control-Allow-Origin: *).
+  // 3. Check browser console for more details.
+-->

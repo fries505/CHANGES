@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Instructions</title>
+    <link rel="stylesheet" href="ican.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Exam Instructions</h1>
+        <ul>
+            <li>This exam consists of 100 multiple-choice questions.</li>
+            <li>You have 180 minutes to complete the exam.</li>
+            <li>There is no penalty for guessing.</li>
+            <li>You cannot return to previous questions once answered.</li>
+            <li>Keep your browser in full-screen mode during the exam.</li>
+            <li>No other applications may be open during the exam.</li>
+        </ul>
+        <button id="startExamBtn" class="btn-primary">Start Exam</button>
+    </div>
+    <script>
+        document.getElementById('startExamBtn').onclick = function() {
+            window.location.href = 'ican.html#examScreen';
+            // Or trigger your exam start logic here
+        };
+    </script>
+</body>
+</html>
